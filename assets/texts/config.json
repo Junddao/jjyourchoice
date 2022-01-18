@@ -1,0 +1,11 @@
+{
+  "api_project_name": "yourchoice",
+  "server_current_type": "dev",
+  "server_info": [
+    {
+      "type": "dev",
+      "base_url": "https://3.34.218.179:8100",
+      "websocket_server": ""
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jtb.jjyourchoice">
+    package="com.jtb.yourchoice">
    <application
         android:label="jjyourchoice"
         android:icon="@mipmap/ic_launcher">

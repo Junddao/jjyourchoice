@@ -40,4 +40,5 @@ class MColors {
   static const black_three = const Color(0xff161616);
   static const white_four = const Color(0xfff8f8f8);
   static const salmon = const Color(0xfff87474);
+  static const black54 = const Color(0x8A000000);
 }

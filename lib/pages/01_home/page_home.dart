@@ -41,6 +41,14 @@ class _PageHomeState extends State<PageHome> {
         children: [
           WidgetTop(),
           Divider(),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: kDefaultHorizontalPadding, vertical: 8),
+            child: Text('내가 좋아하는 커피는 눌러서 추천할 수 있어요! 😚',
+                overflow: TextOverflow.ellipsis,
+                style: MTextStyles.regular12Grey06),
+          ),
+          Divider(),
           listWidget(),
         ],
       ),
@@ -48,16 +56,87 @@ class _PageHomeState extends State<PageHome> {
   }
 
   listWidget() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: kDefaultHorizontalPadding,
-          vertical: kDefaultVerticalPadding),
-      child: ListView.builder(
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: kDefaultHorizontalPadding,
+            vertical: kDefaultVerticalPadding),
+        child: ListView.builder(
           shrinkWrap: true,
           itemCount: 5,
           itemBuilder: (context, index) {
-            return WidgetListItem(index: index);
-          }),
+            return InkWell(
+                onTap: () {
+                  print('item click');
+                  showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: buildBottomSheet,
+                      backgroundColor: Colors.transparent);
+                },
+                child: WidgetListItem(index: index));
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildBottomSheet(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+        color: Colors.white,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 30, 24, 50),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/images/sample.png',
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            SizedBox(height: 18),
+            Text('진짜 기본 카페라떼'),
+            SizedBox(height: 18),
+            Divider(),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: MColors.tomato,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Center(
+                        child: Text('👍  추천', style: MTextStyles.bold16White)),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: MColors.white,
+                      border: Border.all(),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Center(
+                        child: Center(
+                            child: Text('👎 비추천',
+                                style: MTextStyles.bold16Black))),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 }

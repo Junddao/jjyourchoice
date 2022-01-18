@@ -369,6 +369,13 @@ class MTextStyles {
       fontFamily: "NotoSansKR",
       fontStyle: FontStyle.normal,
       fontSize: 16.0);
+
+  static const regular18Black54 = const TextStyle(
+      color: MColors.black54,
+      fontWeight: FontWeight.w400,
+      fontFamily: "NotoSansKR",
+      fontStyle: FontStyle.normal,
+      fontSize: 18.0);
   static const regular12Tomato = const TextStyle(
       color: MColors.tomato,
       fontWeight: FontWeight.w400,
