@@ -376,6 +376,7 @@ class MTextStyles {
       fontFamily: "NotoSansKR",
       fontStyle: FontStyle.normal,
       fontSize: 18.0);
+
   static const regular12Tomato = const TextStyle(
       color: MColors.tomato,
       fontWeight: FontWeight.w400,

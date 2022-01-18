@@ -23,6 +23,7 @@ class _PageSplashState extends State<PageSplash> {
     Future.microtask(() async {
       String? myToken = await ModelSharedPreferences.readToken();
 
+      // if (true) {
       if (myToken == '') {
         // 로그인으로 보내기
         Navigator.of(context)

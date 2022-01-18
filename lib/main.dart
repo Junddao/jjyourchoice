@@ -11,12 +11,14 @@ import 'package:jjyourchoice/provider/provider_user.dart';
 import 'package:jjyourchoice/route.dart';
 import 'package:jjyourchoice/service/api_service.dart';
 import 'package:jjyourchoice/style/colors.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 
 import 'models/model_config.dart';
 
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
+  KakaoContext.clientId = "e57179e755fc254a957e616844e0dd8c";
   runServer();
 }
 

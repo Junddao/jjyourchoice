@@ -45,7 +45,7 @@ class _PageIntroSlideState extends State<PageIntroSlide> {
   void onDonePress() {
     // Do what you want
     print("End of slides");
-    Navigator.of(context).pushNamed('PageTab');
+    Navigator.of(context).pushNamed('PageLogin');
   }
 
   @override

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:jjyourchoice/enum/age.dart';
 import 'package:jjyourchoice/enum/gender.dart';
+import 'package:jjyourchoice/models/singleton_user.dart';
 import 'package:jjyourchoice/pages/09_user_profile/widgets/choice_chip_widget.dart';
 import 'package:jjyourchoice/style/colors.dart';
 import 'package:jjyourchoice/style/constants.dart';
 import 'package:jjyourchoice/style/textstyles.dart';
+import 'package:provider/provider.dart';
 
 class PageUserProfile extends StatefulWidget {
   const PageUserProfile({Key? key}) : super(key: key);
@@ -81,7 +83,8 @@ class _PageUserProfileState extends State<PageUserProfile> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('y2hunter@gmail.com', style: MTextStyles.regular12Grey06),
+              Text(SingletonUser.singletonUser.userData.email!,
+                  style: MTextStyles.regular12Grey06),
               SizedBox(
                 height: 20,
               ),

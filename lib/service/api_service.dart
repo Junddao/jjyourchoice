@@ -44,7 +44,7 @@ class ApiService {
     try {
       final token = await _getAuthorizationToken();
       print(token);
-      _headers['dnss-token'] = '$token';
+      _headers['jj-token'] = '$token';
       print('${ModelConfig().serverBaseUrl}');
       response = await Dio()
           .get('${ModelConfig().serverBaseUrl}$_path',
@@ -71,7 +71,7 @@ class ApiService {
     try {
       final token = await _getAuthorizationToken();
       print(token);
-      _headers['dnss-token'] = '$token';
+      _headers['jj-token'] = '$token';
 
       var _data = jsonEncode(map);
 
@@ -138,7 +138,7 @@ class ApiService {
     // print('${ConfigModel().serverBaseUrl}');
     var response;
     try {
-      // _multiPartHeaders['dnss-token'] = '$token';
+      // _multiPartHeaders['jj-token'] = '$token';
       var _formData = FormData();
       for (int i = 0; i < _files.length; i++) {
         _formData.files.add(

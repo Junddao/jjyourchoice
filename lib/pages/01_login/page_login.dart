@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jjyourchoice/models/model_shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
-import 'package:jjyourchoice/models/sign_in/sign_in_model.dart';
-import 'package:jjyourchoice/provider/provider_auth.dart';
+import 'package:jjyourchoice/models/sign_in/sige_in_response_model.dart';
+import 'package:jjyourchoice/models/sign_in/sign_in_request_model.dart';
+import 'package:jjyourchoice/models/singleton_user.dart';
+import 'package:jjyourchoice/models/user/model_request_user_set.dart';
+
 import 'package:jjyourchoice/provider/provider_user.dart';
 import 'package:jjyourchoice/service/api_service.dart';
 import 'package:jjyourchoice/service/login_service.dart';
@@ -41,136 +44,31 @@ class _PageLoginState extends State<PageLogin> {
 
   _body() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 5,
-            child: Center(
-              // child: DefaultTextStyle(
-              //   style: MTextStyles.bold40black,
-              //   child: AnimatedTextKit(
-
-              //     animatedTexts: [
-              //       WavyAnimatedText('DongNe'),
-              //       WavyAnimatedText('SoSik'),
-              //       WavyAnimatedText('동네소식'),
-              //     ],
-              //     isRepeatingAnimation: true,
-              //   ),
-              // ),
-
-              child: Text('오늘의 커피', style: MTextStyles.bold26black),
-            ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Column(
+      child: isLoading == true
+          ? CircularProgressIndicator()
+          : Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildKakaoLogin(),
-                SizedBox(height: 20.0),
-                // Platform.isIOS
-                //     ? InkWell(
-                //         onTap: () async {
-                //           User? user = await ProviderAuth().signInWithApple();
-                //           String firebaseIdToken = await user!.getIdToken();
-                //           ModelReqeustUserConnect modelReqeustUserConnect =
-                //               ModelReqeustUserConnect(
-                //             firebaseIdToken: firebaseIdToken,
-                //             deviceModel: ApiService.deviceModel,
-                //             osType: ApiService.osType,
-                //             osVersion: ApiService.osVersion,
-                //             uid: ApiService.deviceIdentifier,
-                //           );
-                //           await context
-                //               .read<ProviderUser>()
-                //               .userConnect(modelReqeustUserConnect)
-                //               .catchError((onError) {
-                //             context
-                //                 .read<ProviderUser>()
-                //                 .userSignIn(modelReqeustUserConnect);
-                //           });
-
-                //           ModelRequestUserSet modelRequestUserSet =
-                //               ModelRequestUserSet.fromMap(SingletonUser
-                //                   .singletonUser.userData
-                //                   .toUserSetMap());
-
-                //           modelRequestUserSet.email = user.email ?? '';
-                //           modelRequestUserSet.name = user.displayName ?? '이름없음';
-                //           modelRequestUserSet.phoneNumber =
-                //               user.phoneNumber ?? '';
-                //           modelRequestUserSet.profileImage =
-                //               user.photoURL ?? '';
-                //           await context
-                //               .read<ProviderUser>()
-                //               .setUser(modelRequestUserSet);
-
-                //           await context.read<ProviderUser>().getMe();
-
-                //           double? myLat =
-                //               await ModelSharedPreferences.readMyLat();
-                //           double? myLng =
-                //               await ModelSharedPreferences.readMyLng();
-
-                //           if (myLat == 0 && myLng == 0) {
-                //             Navigator.of(context).pushNamedAndRemoveUntil(
-                //                 'PageSetLocation', (route) => false);
-                //           } else {
-                //             Navigator.of(context).pushNamedAndRemoveUntil(
-                //                 'PageMap', (route) => false);
-                //           }
-                //         },
-                //         child: Stack(
-                //           children: [
-                //             Container(
-                //               height: 48,
-                //               width: SizeConfig.screenWidth * 0.8,
-                //               decoration: BoxDecoration(
-                //                   borderRadius: BorderRadius.circular(30.0),
-                //                   color: MColors.black),
-                //               child: Center(
-                //                   child: Text('Apple로 로그인',
-                //                       style: MTextStyles.bold16White)),
-                //             ),
-                //             Positioned(
-                //               top: 12,
-                //               left: 12,
-                //               child: Icon(
-                //                 FontAwesomeIcons.apple,
-                //                 size: 24,
-                //                 color: MColors.white,
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //       )
-                //     : SizedBox.shrink(),
-                SizedBox(height: 40.0),
-                InkWell(
-                  onTap: () async {},
-                  child: Stack(
+                Expanded(
+                  flex: 5,
+                  child: Center(
+                    child: Text('오늘의 커피', style: MTextStyles.bold26black),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 48,
-                        width: SizeConfig.screenWidth * 0.8,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30.0),
-                            color: MColors.warm_grey),
-                        child: Center(
-                            child: Text('Guest로 사용하기',
-                                style: MTextStyles.bold16White)),
-                      ),
+                      _buildKakaoLogin(),
+                      SizedBox(height: 20.0),
+                      Platform.isIOS ? _buildAppleLogin() : SizedBox.shrink(),
                     ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -190,12 +88,12 @@ class _PageLoginState extends State<PageLogin> {
           children: [
             const SizedBox(width: 22),
             Image.asset(
-              "assets/icons/ic_logo_kakao.png",
+              "assets/images/ic_logo_kakao.png",
               width: 24,
               height: 24,
             ),
             Spacer(),
-            Text('카카오로 로그인', style: MTextStyles.regular18Black54),
+            Text('카카오로 로그인', style: MTextStyles.regular18black),
             Spacer(),
             const SizedBox(width: 24),
             const SizedBox(width: 22),
@@ -216,7 +114,7 @@ class _PageLoginState extends State<PageLogin> {
           ? await AuthCodeClient.instance.requestWithTalk()
           // ? await kakao.AuthCodeClient.instance.request()
           : await AuthCodeClient.instance.request();
-
+      print(code);
       await _issueAccessToken(code);
     } catch (e) {
       logger.e(e.toString());
@@ -238,6 +136,8 @@ class _PageLoginState extends State<PageLogin> {
       //     ));
       var user = await UserApi.instance.me();
       var email = user.kakaoAccount!.email!;
+      var nickName = user.kakaoAccount!.profile!.nickname;
+      var profileImageUrl = user.kakaoAccount!.profile!.profileImageUrl;
       if (user.kakaoAccount == null) {
         logger.v(user.kakaoAccount!.email);
         ScaffoldMessenger.of(context).showSnackBar((SnackBar(
@@ -249,7 +149,8 @@ class _PageLoginState extends State<PageLogin> {
       logger.v(user.toJson());
       final String accessToken = token.toJson()["access_token"].toString();
       // logger.v("kakao token: ${accessToken}");
-      _createKakaoAccountRequest(accessToken, email);
+      _createKakaoAccountRequest(
+          accessToken, email, nickName!, profileImageUrl!);
     } catch (e) {
       logger.v(e.toString());
       ScaffoldMessenger.of(context).showSnackBar((SnackBar(
@@ -259,27 +160,34 @@ class _PageLoginState extends State<PageLogin> {
     }
   }
 
-  void _createKakaoAccountRequest(String token, String email) async {
-    context
-        .read<ProviderAuth>()
+  void _createKakaoAccountRequest(
+      String token, String email, String nickName, String profileImage) async {
+    LoginService()
         .signInWithKakao(token)
         .catchError(_onErrorLogin)
         .then((result) async {
-      if (result!.email == '') {
-        fb.User? fbUser = fb.FirebaseAuth.instance.currentUser;
+      // server에  getuser 해서 가져오고
+      await context.read<ProviderUser>().getMe();
 
-        // user객체에 넣어주기
-
+      if (SingletonUser.singletonUser.userData.age == '') {
+        SingletonUser.singletonUser.userData.email = email;
+        SingletonUser.singletonUser.userData.name = nickName;
+        SingletonUser.singletonUser.userData.profileImage = profileImage;
+        // 정보 입력 안된 상태면 입력 창으로보내기
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
       } else {
-        // server에  getuser 해서 가져오고
-        // singleton에 넣고
-        // shared에 넣고
+        // 입력 다 받아진 상태면
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('PageTab', (route) => false);
       }
+
+      // singleton에 넣고
+      // shared에 넣고
+
       _stopLoading();
 
       // 페이지 전환
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('PageTab', (route) => false);
     });
   }
 
@@ -294,8 +202,75 @@ class _PageLoginState extends State<PageLogin> {
   _onErrorLogin(Object error) {
     _stopLoading();
     print('kakao login error');
-    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //   content: Text('$error'),
-    // ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('$error'),
+    ));
+  }
+
+  _buildAppleLogin() {
+    Size size = MediaQuery.of(context).size;
+    return InkWell(
+      onTap: () => _loginWithApple(),
+      child: Container(
+        width: size.width - 40,
+        height: 50,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: Colors.black,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: 22),
+            Icon(
+              FontAwesomeIcons.apple,
+              size: 24,
+              color: MColors.white,
+            ),
+            Spacer(),
+            Text('Apple로 로그인', style: MTextStyles.regular18white),
+            Spacer(),
+            const SizedBox(width: 24),
+            const SizedBox(width: 22),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _loginWithApple() async {
+    fb.User? user = await LoginService().signInWithApple();
+    String firebaseIdToken = await user!.getIdToken();
+    SignInRequestModel signInRequestModel = SignInRequestModel(
+      firebaseIdToken: firebaseIdToken,
+      deviceModel: ApiService.deviceModel,
+      osType: ApiService.osType,
+      osVersion: ApiService.osVersion,
+      uid: ApiService.deviceIdentifier,
+    );
+
+    LoginService().signIn(user).catchError(_onErrorLogin).then((result) async {
+      await context.read<ProviderUser>().getMe();
+
+      if (SingletonUser.singletonUser.userData.age == '') {
+        SingletonUser.singletonUser.userData.email = user.email;
+        SingletonUser.singletonUser.userData.name = user.displayName;
+        SingletonUser.singletonUser.userData.profileImage = user.photoURL;
+        // 정보 입력 안된 상태면 입력 창으로보내기
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
+      } else {
+        // 입력 다 받아진 상태면
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('PageTab', (route) => false);
+      }
+
+      // singleton에 넣고
+      // shared에 넣고
+
+      _stopLoading();
+
+      // 페이지 전환
+    });
   }
 }
