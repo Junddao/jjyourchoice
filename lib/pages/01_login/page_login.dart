@@ -253,9 +253,9 @@ class _PageLoginState extends State<PageLogin> {
       await context.read<ProviderUser>().getMe();
 
       if (SingletonUser.singletonUser.userData.age == '') {
-        SingletonUser.singletonUser.userData.email = user.email;
-        SingletonUser.singletonUser.userData.name = user.displayName;
-        SingletonUser.singletonUser.userData.profileImage = user.photoURL;
+        SingletonUser.singletonUser.userData.email = user.email ?? '';
+        SingletonUser.singletonUser.userData.name = user.displayName ?? '';
+        SingletonUser.singletonUser.userData.profileImage = user.photoURL ?? '';
         // 정보 입력 안된 상태면 입력 창으로보내기
         Navigator.of(context)
             .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
