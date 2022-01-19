@@ -60,6 +60,9 @@ class ApiService {
     } on SocketException {
       print('No network');
       throw Exception();
+    } on Error {
+      print('other error');
+      throw Exception();
     }
     return response?.data;
   }

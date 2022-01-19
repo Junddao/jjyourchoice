@@ -169,10 +169,11 @@ class _PageLoginState extends State<PageLogin> {
       // server에  getuser 해서 가져오고
       await context.read<ProviderUser>().getMe();
 
+      SingletonUser.singletonUser.userData.email = email;
+      SingletonUser.singletonUser.userData.name = nickName;
+      SingletonUser.singletonUser.userData.profileImage = profileImage;
+
       if (SingletonUser.singletonUser.userData.age == '') {
-        SingletonUser.singletonUser.userData.email = email;
-        SingletonUser.singletonUser.userData.name = nickName;
-        SingletonUser.singletonUser.userData.profileImage = profileImage;
         // 정보 입력 안된 상태면 입력 창으로보내기
         Navigator.of(context)
             .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);

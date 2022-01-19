@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:jjyourchoice/enum/age.dart';
+import 'package:jjyourchoice/enum/brand.dart';
+import 'package:jjyourchoice/enum/gender.dart';
 import 'package:jjyourchoice/models/singleton_user.dart';
 import 'package:jjyourchoice/models/user/model_request_user_set.dart';
 
@@ -10,6 +13,24 @@ import 'package:jjyourchoice/service/api_service.dart';
 
 class ProviderUser extends ParentProvider {
   ModelUserInfo selectedUser = ModelUserInfo();
+  EnumAge selectedAge = EnumAge.ten;
+  EnumGender selectedGender = EnumGender.male;
+  EnumBrand selectedBrand = EnumBrand.starbucks;
+
+  void setSelectedAge(EnumAge value) {
+    selectedAge = value;
+    notifyListeners();
+  }
+
+  void setSelectedGender(EnumGender value) {
+    selectedGender = value;
+    notifyListeners();
+  }
+
+  void setSelectedBrand(EnumBrand value) {
+    selectedBrand = value;
+    notifyListeners();
+  }
 
   Future<void> getMe() async {
     try {

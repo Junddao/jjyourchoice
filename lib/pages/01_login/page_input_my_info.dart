@@ -3,12 +3,14 @@ import 'package:jjyourchoice/enum/age.dart';
 import 'package:jjyourchoice/enum/gender.dart';
 import 'package:jjyourchoice/models/singleton_user.dart';
 import 'package:jjyourchoice/models/user/model_request_user_set.dart';
-import 'package:jjyourchoice/pages/09_user_profile/widgets/choice_chip_widget.dart';
+import 'package:jjyourchoice/pages/components/choice_chip_age_widget.dart';
+import 'package:jjyourchoice/pages/components/choice_chip_gender_widget.dart';
 import 'package:jjyourchoice/pages/components/jj_button.dart';
 import 'package:jjyourchoice/provider/provider_user.dart';
 import 'package:jjyourchoice/style/colors.dart';
 import 'package:jjyourchoice/style/constants.dart';
 import 'package:jjyourchoice/style/textstyles.dart';
+import 'package:jjyourchoice/utils/trans_format.dart';
 import 'package:provider/provider.dart';
 
 class PageInputMyInfo extends StatefulWidget {
@@ -19,7 +21,7 @@ class PageInputMyInfo extends StatefulWidget {
 }
 
 class _PageInputMyInfoState extends State<PageInputMyInfo> {
-  EnumGender _gender = EnumGender.MAN;
+  EnumGender _gender = EnumGender.male;
   EnumAge _typeOfAge = EnumAge.ten;
 
   @override
@@ -85,41 +87,14 @@ class _PageInputMyInfoState extends State<PageInputMyInfo> {
             runSpacing: 5.0, // gap between lines
 
             children: [
-              ChoiceChipWidget(
-                returnDataFunc: returnDataFunc,
+              ChoiceChipAgeWidget(
+                initAge: EnumAge.ten,
               ),
             ],
           ),
         ],
       ),
     );
-  }
-
-  void returnDataFunc(EnumAge selectedData) {
-    setState(() {
-      _typeOfAge = selectedData;
-      switch (_typeOfAge) {
-        case EnumAge.ten:
-          SingletonUser.singletonUser.userData.age = "10";
-          break;
-        case EnumAge.twenty:
-          SingletonUser.singletonUser.userData.age = "20";
-          break;
-        case EnumAge.thirty:
-          SingletonUser.singletonUser.userData.age = "30";
-          break;
-        case EnumAge.fourty:
-          SingletonUser.singletonUser.userData.age = "40";
-          break;
-        case EnumAge.fifty:
-          SingletonUser.singletonUser.userData.age = "50";
-          break;
-        case EnumAge.overSixty:
-          SingletonUser.singletonUser.userData.age = "60";
-          break;
-        default:
-      }
-    });
   }
 
   genderWidget() {
@@ -133,38 +108,72 @@ class _PageInputMyInfoState extends State<PageInputMyInfo> {
           SizedBox(height: 12),
           Text('성별 😗', style: MTextStyles.bold18Black),
           SizedBox(height: 8),
-          RadioListTile(
-            contentPadding: EdgeInsets.zero,
-            activeColor: MColors.tomato,
-            title: Text('남자'),
-            value: EnumGender.MAN,
-            groupValue: _gender,
-            onChanged: (EnumGender? value) {
-              setState(() {
-                _gender = value!;
-                SingletonUser.singletonUser.userData.gender = "male";
-              });
-            },
-          ),
-          RadioListTile(
-            contentPadding: EdgeInsets.zero,
-            activeColor: MColors.tomato,
-            title: Text('여자'),
-            value: EnumGender.WOMEN,
-            groupValue: _gender,
-            onChanged: (EnumGender? value) {
-              setState(() {
-                _gender = value!;
-                SingletonUser.singletonUser.userData.gender = "female";
-              });
-            },
+          Wrap(
+            alignment: WrapAlignment.start,
+            direction: Axis.horizontal,
+            spacing: 5.0, // gap between adjacent chips
+            runSpacing: 5.0, // gap between lines
+
+            children: [
+              ChoiceChipGenderWidget(
+                initGender: _gender,
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
+  // genderWidget() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(
+  //         vertical: kDefaultVerticalPadding,
+  //         horizontal: kDefaultHorizontalPadding),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         SizedBox(height: 12),
+  //         Text('성별 😗', style: MTextStyles.bold18Black),
+  //         SizedBox(height: 8),
+  //         RadioListTile(
+  //           contentPadding: EdgeInsets.zero,
+  //           activeColor: MColors.tomato,
+  //           title: Text('남자'),
+  //           value: EnumGender.male,
+  //           groupValue: _gender,
+  //           onChanged: (EnumGender? value) {
+  //             setState(() {
+  //               _gender = value!;
+  //               SingletonUser.singletonUser.userData.gender = "male";
+  //             });
+  //           },
+  //         ),
+  //         RadioListTile(
+  //           contentPadding: EdgeInsets.zero,
+  //           activeColor: MColors.tomato,
+  //           title: Text('여자'),
+  //           value: EnumGender.female,
+  //           groupValue: _gender,
+  //           onChanged: (EnumGender? value) {
+  //             setState(() {
+  //               _gender = value!;
+  //               SingletonUser.singletonUser.userData.gender = "female";
+  //             });
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   goTabPage() async {
+    SingletonUser.singletonUser.userData.age =
+        TransFormat.getENStringFromEnumAge(
+            context.read<ProviderUser>().selectedAge);
+    SingletonUser.singletonUser.userData.gender =
+        TransFormat.getENStringFromEnumGender(
+            context.read<ProviderUser>().selectedGender);
     ModelRequestUserSet modelRequestUserSet = ModelRequestUserSet(
       age: SingletonUser.singletonUser.userData.age,
       email: SingletonUser.singletonUser.userData.email,

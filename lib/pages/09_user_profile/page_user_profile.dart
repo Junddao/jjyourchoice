@@ -4,12 +4,18 @@ import 'package:jjyourchoice/enum/age.dart';
 import 'package:jjyourchoice/enum/gender.dart';
 import 'package:jjyourchoice/models/model_shared_preferences.dart';
 import 'package:jjyourchoice/models/singleton_user.dart';
+import 'package:jjyourchoice/models/user/model_request_user_set.dart';
 import 'package:jjyourchoice/models/user/model_user_info.dart';
-import 'package:jjyourchoice/pages/09_user_profile/widgets/choice_chip_widget.dart';
+import 'package:jjyourchoice/pages/components/choice_chip_age_widget.dart';
+import 'package:jjyourchoice/pages/components/choice_chip_gender_widget.dart';
+import 'package:jjyourchoice/pages/components/jj_dialog.dart';
+import 'package:jjyourchoice/provider/provider_tab.dart';
+import 'package:jjyourchoice/provider/provider_user.dart';
 import 'package:jjyourchoice/service/login_service.dart';
 import 'package:jjyourchoice/style/colors.dart';
 import 'package:jjyourchoice/style/constants.dart';
 import 'package:jjyourchoice/style/textstyles.dart';
+import 'package:jjyourchoice/utils/trans_format.dart';
 import 'package:provider/provider.dart';
 
 class PageUserProfile extends StatefulWidget {
@@ -20,8 +26,39 @@ class PageUserProfile extends StatefulWidget {
 }
 
 class _PageUserProfileState extends State<PageUserProfile> {
-  EnumGender _gender = EnumGender.MAN;
+  EnumGender _gender = EnumGender.male;
   EnumAge _typeOfAge = EnumAge.ten;
+
+  @override
+  void initState() {
+    SingletonUser.singletonUser.userData.gender == 'male'
+        ? _gender = EnumGender.male
+        : _gender = EnumGender.female;
+
+    switch (SingletonUser.singletonUser.userData.age) {
+      case "10":
+        _typeOfAge = EnumAge.ten;
+        break;
+      case "20":
+        _typeOfAge = EnumAge.twenty;
+        break;
+      case "30":
+        _typeOfAge = EnumAge.thirty;
+        break;
+      case "40":
+        _typeOfAge = EnumAge.fourty;
+        break;
+      case "50":
+        _typeOfAge = EnumAge.fifty;
+        break;
+      case "60":
+        _typeOfAge = EnumAge.overSixty;
+        break;
+      default:
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +75,7 @@ class _PageUserProfileState extends State<PageUserProfile> {
       actions: [
         TextButton(
           onPressed: () {
-            // onSave();
+            onSave();
           },
           child: Text(
             '저장하기',
@@ -129,31 +166,19 @@ class _PageUserProfileState extends State<PageUserProfile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 12),
-          Text('성별', style: MTextStyles.bold18Black),
+          Text('성별 😗', style: MTextStyles.bold18Black),
           SizedBox(height: 8),
-          RadioListTile(
-            contentPadding: EdgeInsets.zero,
-            activeColor: MColors.tomato,
-            title: Text('남자'),
-            value: EnumGender.MAN,
-            groupValue: _gender,
-            onChanged: (EnumGender? value) {
-              setState(() {
-                _gender = value!;
-              });
-            },
-          ),
-          RadioListTile(
-            contentPadding: EdgeInsets.zero,
-            activeColor: MColors.tomato,
-            title: Text('여자'),
-            value: EnumGender.WOMEN,
-            groupValue: _gender,
-            onChanged: (EnumGender? value) {
-              setState(() {
-                _gender = value!;
-              });
-            },
+          Wrap(
+            alignment: WrapAlignment.start,
+            direction: Axis.horizontal,
+            spacing: 5.0, // gap between adjacent chips
+            runSpacing: 5.0, // gap between lines
+
+            children: [
+              ChoiceChipGenderWidget(
+                initGender: _gender,
+              ),
+            ],
           ),
         ],
       ),
@@ -169,7 +194,7 @@ class _PageUserProfileState extends State<PageUserProfile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 12),
-          Text('연령대', style: MTextStyles.bold18Black),
+          Text('연령대 😊', style: MTextStyles.bold18Black),
           SizedBox(height: 8),
           Wrap(
             alignment: WrapAlignment.start,
@@ -178,8 +203,8 @@ class _PageUserProfileState extends State<PageUserProfile> {
             runSpacing: 5.0, // gap between lines
 
             children: [
-              ChoiceChipWidget(
-                returnDataFunc: returnDataFunc,
+              ChoiceChipAgeWidget(
+                initAge: _typeOfAge,
               ),
             ],
           ),
@@ -188,29 +213,35 @@ class _PageUserProfileState extends State<PageUserProfile> {
     );
   }
 
-  void returnDataFunc(EnumAge selectedData) {
-    setState(() {
-      _typeOfAge = selectedData;
-    });
-  }
-
   void onSave() async {
-    if (1 == 1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("빈칸을 채워주세요."),
-          backgroundColor: Colors.red,
-        ),
-      );
+    try {
+      bool result = await JJDialog.showTwoButtonDialog(
+          context: context, title: '저장하기', subTitle: '정말 저장하시겠습니까?');
+      if (result == false) {
+        return;
+      } else {
+        SingletonUser.singletonUser.userData.age =
+            TransFormat.getENStringFromEnumAge(
+                context.read<ProviderUser>().selectedAge);
+        SingletonUser.singletonUser.userData.gender =
+            TransFormat.getENStringFromEnumGender(
+                context.read<ProviderUser>().selectedGender);
+        ModelRequestUserSet modelRequestUserSet = ModelRequestUserSet(
+          age: SingletonUser.singletonUser.userData.age,
+          email: SingletonUser.singletonUser.userData.email,
+          gender: SingletonUser.singletonUser.userData.gender,
+          name: SingletonUser.singletonUser.userData.name,
+          profileImage: SingletonUser.singletonUser.userData.profileImage,
+          state: SingletonUser.singletonUser.userData.state,
+        );
+        context.read<ProviderUser>().setUser(modelRequestUserSet);
 
-      return;
-    }
-
-    try {} catch (e) {
+        Provider.of<ProviderTab>(context, listen: false).selectedIndex = 0;
+      }
+    } catch (e) {
       print(e);
-    } finally {
-      EasyLoading.dismiss();
-      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('저장에 실패하였습니다. 다시 시도해주세요.')));
     }
   }
 

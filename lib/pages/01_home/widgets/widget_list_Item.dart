@@ -59,11 +59,11 @@ class WidgetListItem extends StatelessWidget {
               // 추천수
               Row(
                 children: [
-                  Text('👍 ${coffeeList[index].coffee!.totalLikeCount}',
+                  Text('👍 ${coffeeList[index].preferenceCount}',
                       style: MTextStyles.regular12Grey06),
                   SizedBox(width: 8),
-                  Text('👎 ${coffeeList[index].coffee!.totalHateCount}',
-                      style: MTextStyles.regular12Grey06),
+                  // Text('👎 ${coffeeList[index].coffee!.totalHateCount}',
+                  //     style: MTextStyles.regular12Grey06),
                 ],
               ),
             ],
