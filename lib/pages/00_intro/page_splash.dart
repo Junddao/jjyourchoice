@@ -8,6 +8,7 @@ import 'package:jjyourchoice/models/model_shared_preferences.dart';
 import 'package:jjyourchoice/models/singleton_user.dart';
 import 'package:jjyourchoice/provider/provider_user.dart';
 import 'package:jjyourchoice/service/api_service.dart';
+import 'package:jjyourchoice/style/constants.dart';
 import 'package:provider/provider.dart';
 
 class PageSplash extends StatefulWidget {
@@ -47,6 +48,7 @@ class _PageSplashState extends State<PageSplash> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

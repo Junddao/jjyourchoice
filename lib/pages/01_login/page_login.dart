@@ -177,9 +177,11 @@ class _PageLoginState extends State<PageLogin> {
         Navigator.of(context)
             .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
       } else {
-        // 입력 다 받아진 상태면
         Navigator.of(context)
-            .pushNamedAndRemoveUntil('PageTab', (route) => false);
+            .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
+        // 입력 다 받아진 상태면
+        // Navigator.of(context)
+        //     .pushNamedAndRemoveUntil('PageTab', (route) => false);
       }
 
       // singleton에 넣고

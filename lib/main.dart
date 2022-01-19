@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:jjyourchoice/pages/00_intro/page_splash.dart';
+import 'package:jjyourchoice/provider/provider_coffee.dart';
 import 'package:jjyourchoice/provider/provider_tab.dart';
 import 'package:jjyourchoice/provider/provider_user.dart';
 import 'package:jjyourchoice/route.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
             providers: [
               ChangeNotifierProvider(create: (_) => ProviderTab()),
               ChangeNotifierProvider(create: (_) => ProviderUser()),
+              ChangeNotifierProvider(create: (_) => ProviderCoffee()),
             ],
             child: MaterialApp(
               theme: ThemeData(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:jjyourchoice/style/constants.dart';
 
 class PageBlock extends StatelessWidget {
   const PageBlock({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: _body(),
     );

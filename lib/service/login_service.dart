@@ -146,4 +146,12 @@ class LoginService {
 
     return signInRequestModel;
   }
+
+  Future signOut() async {
+    try {
+      return await _auth.signOut();
+    } catch (e) {
+      return '로그아웃 실패. 다시 시도해주세요.';
+    }
+  }
 }

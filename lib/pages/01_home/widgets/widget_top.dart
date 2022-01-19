@@ -8,6 +8,7 @@ class WidgetTop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: kDefaultHorizontalPadding,
@@ -20,11 +21,11 @@ class WidgetTop extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               color: MColors.tomato,
             ),
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('필터선택', style: MTextStyles.bold14White),
+                Text('필터선택', style: MTextStyles.regular14White),
                 Icon(Icons.arrow_drop_down, color: MColors.white),
               ],
             ),

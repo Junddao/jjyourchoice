@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
+import 'package:jjyourchoice/style/constants.dart';
 
 class PageIntroSlide extends StatefulWidget {
   const PageIntroSlide({Key? key}) : super(key: key);
@@ -50,6 +51,7 @@ class _PageIntroSlideState extends State<PageIntroSlide> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return new IntroSlider(
       slides: this.slides,
       onDonePress: this.onDonePress,

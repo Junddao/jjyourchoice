@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:jjyourchoice/enum/age.dart';
 import 'package:jjyourchoice/enum/gender.dart';
+import 'package:jjyourchoice/models/model_shared_preferences.dart';
 import 'package:jjyourchoice/models/singleton_user.dart';
+import 'package:jjyourchoice/models/user/model_user_info.dart';
 import 'package:jjyourchoice/pages/09_user_profile/widgets/choice_chip_widget.dart';
+import 'package:jjyourchoice/service/login_service.dart';
 import 'package:jjyourchoice/style/colors.dart';
 import 'package:jjyourchoice/style/constants.dart';
 import 'package:jjyourchoice/style/textstyles.dart';
@@ -61,6 +64,14 @@ class _PageUserProfileState extends State<PageUserProfile> {
             thickness: 10,
           ),
           ageWidget(),
+          Divider(
+            thickness: 10,
+          ),
+          ListTile(
+            title: Text("로그아웃", style: MTextStyles.regular16Tomato),
+            onTap: logout,
+          ),
+          SizedBox(height: 60),
         ],
       ),
     );
@@ -201,5 +212,24 @@ class _PageUserProfileState extends State<PageUserProfile> {
       EasyLoading.dismiss();
       Navigator.of(context).pop();
     }
+  }
+
+  void logout() {
+    LoginService().signOut().then((value) {
+      if (value is String) {
+        // fail
+        print(value);
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text(value)));
+      } else {
+        // success
+
+        ModelSharedPreferences.removeToken();
+
+        SingletonUser.singletonUser.userData = ModelUserInfo();
+
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('PageLogin', (route) => false);
+      }
+    });
   }
 }
