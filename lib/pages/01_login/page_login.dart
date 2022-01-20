@@ -18,7 +18,7 @@ import 'package:jjyourchoice/style/constants.dart';
 import 'package:jjyourchoice/style/textstyles.dart';
 import 'package:jjyourchoice/utils/util.dart';
 
-import 'package:kakao_flutter_sdk/auth.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:kakao_flutter_sdk/user.dart';
 import 'package:logger/logger.dart';
 

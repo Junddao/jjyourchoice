@@ -1,1 +1,1 @@
-enum EnumBrand { starbucks, twosome, ediya }
+enum EnumBrand { starbucks, twosome, ediya, none }

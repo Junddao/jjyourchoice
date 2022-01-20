@@ -24,6 +24,8 @@ class TransFormat {
       case EnumAge.overSixty:
         returnString = '60';
         break;
+      default:
+        returnString = "";
     }
     return returnString;
   }
@@ -49,6 +51,8 @@ class TransFormat {
       case EnumAge.overSixty:
         returnString = '60대 이상';
         break;
+      default:
+        returnString = "선택안함";
     }
     return returnString;
   }
@@ -65,6 +69,8 @@ class TransFormat {
       case EnumBrand.ediya:
         returnString = 'ediya';
         break;
+      default:
+        returnString = "";
     }
     return returnString;
   }
@@ -81,6 +87,8 @@ class TransFormat {
       case EnumBrand.ediya:
         returnString = '이디야';
         break;
+      default:
+        returnString = "선택안함";
     }
     return returnString;
   }
@@ -94,6 +102,8 @@ class TransFormat {
       case EnumGender.female:
         returnString = 'female';
         break;
+      default:
+        returnString = "";
     }
     return returnString;
   }
@@ -107,6 +117,8 @@ class TransFormat {
       case EnumGender.female:
         returnString = '여성';
         break;
+      default:
+        returnString = "선택안함";
     }
     return returnString;
   }

@@ -5,4 +5,5 @@ enum EnumAge {
   fourty,
   fifty,
   overSixty,
+  none,
 }

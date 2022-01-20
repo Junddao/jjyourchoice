@@ -29,9 +29,9 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
-  EnumGender _gender = EnumGender.male;
-  EnumAge _typeOfAge = EnumAge.ten;
-  EnumBrand _brand = EnumBrand.starbucks;
+  EnumGender _gender = EnumGender.none;
+  EnumAge _age = EnumAge.none;
+  EnumBrand _brand = EnumBrand.none;
 
   @override
   void initState() {
@@ -58,44 +58,44 @@ class _PageHomeState extends State<PageHome> {
 
     switch (SingletonUser.singletonUser.userData.age) {
       case "10":
-        _typeOfAge = EnumAge.ten;
+        _age = EnumAge.ten;
         break;
       case "20":
-        _typeOfAge = EnumAge.twenty;
+        _age = EnumAge.twenty;
         break;
       case "30":
-        _typeOfAge = EnumAge.thirty;
+        _age = EnumAge.thirty;
         break;
       case "40":
-        _typeOfAge = EnumAge.fourty;
+        _age = EnumAge.fourty;
         break;
       case "50":
-        _typeOfAge = EnumAge.fifty;
+        _age = EnumAge.fifty;
         break;
       case "60":
-        _typeOfAge = EnumAge.overSixty;
+        _age = EnumAge.overSixty;
         break;
       default:
     }
 
     switch (SingletonUser.singletonUser.userData.age) {
       case "10":
-        _typeOfAge = EnumAge.ten;
+        _age = EnumAge.ten;
         break;
       case "20":
-        _typeOfAge = EnumAge.twenty;
+        _age = EnumAge.twenty;
         break;
       case "30":
-        _typeOfAge = EnumAge.thirty;
+        _age = EnumAge.thirty;
         break;
       case "40":
-        _typeOfAge = EnumAge.fourty;
+        _age = EnumAge.fourty;
         break;
       case "50":
-        _typeOfAge = EnumAge.fifty;
+        _age = EnumAge.fifty;
         break;
       case "60":
-        _typeOfAge = EnumAge.overSixty;
+        _age = EnumAge.overSixty;
         break;
       default:
     }
@@ -159,7 +159,18 @@ class _PageHomeState extends State<PageHome> {
         children: [
           InkWell(
             onTap: () async {
-              showFilterDialog();
+              await showFilterDialog();
+              context.read<ProviderCoffee>().filteredValue =
+                  ModelRequestGetCoffeeList(
+                age: TransFormat.getENStringFromEnumAge(
+                    context.read<ProviderUser>().selectedAge),
+                brand: TransFormat.getENStringFromEnumBrand(
+                    context.read<ProviderUser>().selectedBrand),
+                gender: TransFormat.getENStringFromEnumGender(
+                    context.read<ProviderUser>().selectedGender),
+                preference: "like",
+              );
+              context.read<ProviderCoffee>().getCoffeeList();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -179,37 +190,49 @@ class _PageHomeState extends State<PageHome> {
           SizedBox(height: 8),
           Wrap(
             alignment: WrapAlignment.start,
-            spacing: 10,
+            // spacing: 10,
             children: [
-              Chip(
-                backgroundColor: MColors.tomato_10,
-                label: Text(
-                    TransFormat.getKRStringFromEnumGender(
-                        context.watch<ProviderUser>().selectedGender),
-                    style: MTextStyles.bold12Tomato),
-                onDeleted: () {
-                  print('aaa');
-                },
-                deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
-              ),
-              Chip(
-                backgroundColor: MColors.tomato_10,
-                label: Text(
-                    TransFormat.getKRStringFromEnumAge(
-                        context.watch<ProviderUser>().selectedAge),
-                    style: MTextStyles.bold12Tomato),
-                onDeleted: () {},
-                deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
-              ),
-              Chip(
-                backgroundColor: MColors.tomato_10,
-                label: Text(
-                    TransFormat.getKRStringFromEnumBrand(
-                        context.watch<ProviderUser>().selectedBrand),
-                    style: MTextStyles.bold12Tomato),
-                onDeleted: () {},
-                deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
-              ),
+              context.read<ProviderUser>().selectedGender == EnumGender.none
+                  ? SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Chip(
+                        backgroundColor: MColors.tomato_10,
+                        label: Text(
+                            TransFormat.getKRStringFromEnumGender(
+                                context.watch<ProviderUser>().selectedGender),
+                            style: MTextStyles.bold12Tomato),
+                        onDeleted: () {
+                          print('aaa');
+                        },
+                        deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
+                      ),
+                    ),
+              context.read<ProviderUser>().selectedAge == EnumAge.none
+                  ? SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Chip(
+                        backgroundColor: MColors.tomato_10,
+                        label: Text(
+                            TransFormat.getKRStringFromEnumAge(
+                                context.watch<ProviderUser>().selectedAge),
+                            style: MTextStyles.bold12Tomato),
+                        onDeleted: () {},
+                        deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
+                      ),
+                    ),
+              context.read<ProviderUser>().selectedBrand == EnumBrand.none
+                  ? SizedBox.shrink()
+                  : Chip(
+                      backgroundColor: MColors.tomato_10,
+                      label: Text(
+                          TransFormat.getKRStringFromEnumBrand(
+                              context.watch<ProviderUser>().selectedBrand),
+                          style: MTextStyles.bold12Tomato),
+                      onDeleted: () {},
+                      deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
+                    ),
             ],
           ),
         ],
@@ -223,27 +246,32 @@ class _PageHomeState extends State<PageHome> {
         padding: EdgeInsets.symmetric(
             horizontal: kDefaultHorizontalPadding,
             vertical: kDefaultVerticalPadding),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return InkWell(
-                onTap: () {
-                  print('item click');
-                  showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (context) {
-                            return buildBottomSheet(context, index);
-                          },
-                          backgroundColor: Colors.transparent)
-                      .then((value) {
-                    context.read<ProviderCoffee>().getCoffeeList();
-                  });
+        child: context
+                .read<ProviderCoffee>()
+                .modelResponseGetCoffeeListData!
+                .isEmpty
+            ? Center(child: Text('해당 조건에 맞는 커피가 없어요 😭'))
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                      onTap: () {
+                        print('item click');
+                        showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) {
+                                  return buildBottomSheet(context, index);
+                                },
+                                backgroundColor: Colors.transparent)
+                            .then((value) {
+                          context.read<ProviderCoffee>().getCoffeeList();
+                        });
+                      },
+                      child: WidgetListItem(index: index));
                 },
-                child: WidgetListItem(index: index));
-          },
-        ),
+              ),
       ),
     );
   }
@@ -375,17 +403,19 @@ class _PageHomeState extends State<PageHome> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SingleChildScrollView(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        genderWidget(),
-                        ageWidget(),
-                        brandWidget(),
-                      ],
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          genderWidget(),
+                          ageWidget(),
+                          brandWidget(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
