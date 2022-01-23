@@ -37,12 +37,11 @@ class _PageHomeState extends State<PageHome> {
   void initState() {
     ParentProvider().initailize();
 
-    getUserInfo();
-
     Future.microtask(() {
+      getUserInfo();
       context.read<ProviderCoffee>().filteredValue = ModelRequestGetCoffeeList(
         age: SingletonUser.singletonUser.userData.age,
-        brand: "",
+        brand: TransFormat.getENStringFromEnumBrand(_brand),
         gender: SingletonUser.singletonUser.userData.gender,
         preference: "like",
       );
@@ -52,53 +51,20 @@ class _PageHomeState extends State<PageHome> {
   }
 
   void getUserInfo() {
-    SingletonUser.singletonUser.userData.gender == 'male'
-        ? _gender = EnumGender.male
-        : _gender = EnumGender.female;
+    // gender 초기값 가져오기
 
-    switch (SingletonUser.singletonUser.userData.age) {
-      case "10":
-        _age = EnumAge.ten;
-        break;
-      case "20":
-        _age = EnumAge.twenty;
-        break;
-      case "30":
-        _age = EnumAge.thirty;
-        break;
-      case "40":
-        _age = EnumAge.fourty;
-        break;
-      case "50":
-        _age = EnumAge.fifty;
-        break;
-      case "60":
-        _age = EnumAge.overSixty;
-        break;
-      default:
-    }
+    _gender = TransFormat.getEnumGenderFromString(
+        SingletonUser.singletonUser.userData.gender!);
+    // 나이 초기값 가져오기
+    _age = TransFormat.getEnumAgeFromString(
+        SingletonUser.singletonUser.userData.age!);
 
-    switch (SingletonUser.singletonUser.userData.age) {
-      case "10":
-        _age = EnumAge.ten;
-        break;
-      case "20":
-        _age = EnumAge.twenty;
-        break;
-      case "30":
-        _age = EnumAge.thirty;
-        break;
-      case "40":
-        _age = EnumAge.fourty;
-        break;
-      case "50":
-        _age = EnumAge.fifty;
-        break;
-      case "60":
-        _age = EnumAge.overSixty;
-        break;
-      default:
-    }
+    _brand = TransFormat.getEnumBrandFromString('');
+    // 브랜드 초기값 가져오기
+
+    context.read<ProviderUser>().setSelectedAge(_age);
+    context.read<ProviderUser>().setSelectedGender(_gender);
+    context.read<ProviderUser>().setSelectedBrand(_brand);
   }
 
   @override
@@ -277,8 +243,9 @@ class _PageHomeState extends State<PageHome> {
   }
 
   Widget buildBottomSheet(BuildContext context, int index) {
+    ProviderCoffee providerCoffee = context.read<ProviderCoffee>();
     List<ModelResponseGetCoffeeListData>? coffeeList =
-        context.read<ProviderCoffee>().modelResponseGetCoffeeListData;
+        providerCoffee.modelResponseGetCoffeeListData;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -291,11 +258,30 @@ class _PageHomeState extends State<PageHome> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            CachedNetworkImage(
-              imageUrl: coffeeList![index].coffee!.image!,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            Stack(
+              children: [
+                coffeeList![index].coffee!.temp == 'hot'
+                    ? Image.asset(
+                        'assets/images/hot.png',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'assets/images/ice.png',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                Positioned(
+                  child: CachedNetworkImage(
+                    imageUrl: getBrandLogo(
+                        providerCoffee, coffeeList[index].coffee!.brand!),
+                    height: 30,
+                    width: 30,
+                  ),
+                )
+              ],
             ),
             SizedBox(height: 18),
             Text(coffeeList[index].coffee!.brand!,
@@ -528,5 +514,15 @@ class _PageHomeState extends State<PageHome> {
         ],
       ),
     );
+  }
+
+  getBrandLogo(ProviderCoffee providerCoffee, String? brand) {
+    String? brandImage;
+    providerCoffee.brands!.forEach((element) {
+      if (element.name == brand) {
+        brandImage = element.logo;
+      }
+    });
+    return brandImage!;
   }
 }

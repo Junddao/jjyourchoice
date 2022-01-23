@@ -57,25 +57,35 @@ class TransFormat {
     return returnString;
   }
 
-  static String getENStringFromEnumBrand(EnumBrand value) {
-    String returnString;
+  static EnumAge getEnumAgeFromString(String value) {
+    EnumAge _age;
     switch (value) {
-      case EnumBrand.starbucks:
-        returnString = 'starbucks';
+      case "10":
+        _age = EnumAge.ten;
         break;
-      case EnumBrand.twosome:
-        returnString = 'twosome';
+      case "20":
+        _age = EnumAge.twenty;
         break;
-      case EnumBrand.ediya:
-        returnString = 'ediya';
+      case "30":
+        _age = EnumAge.thirty;
+        break;
+      case "40":
+        _age = EnumAge.fourty;
+        break;
+      case "50":
+        _age = EnumAge.fifty;
+        break;
+      case "60":
+        _age = EnumAge.overSixty;
         break;
       default:
-        returnString = "";
+        _age = EnumAge.none;
     }
-    return returnString;
+
+    return _age;
   }
 
-  static String getKRStringFromEnumBrand(EnumBrand value) {
+  static String getENStringFromEnumBrand(EnumBrand value) {
     String returnString;
     switch (value) {
       case EnumBrand.starbucks:
@@ -87,10 +97,112 @@ class TransFormat {
       case EnumBrand.ediya:
         returnString = '이디야';
         break;
+      case EnumBrand.paul:
+        returnString = '폴 바셋';
+        break;
+      case EnumBrand.hollys:
+        returnString = '할리스';
+        break;
+      case EnumBrand.angel:
+        returnString = '엔제리어스';
+        break;
+      case EnumBrand.bean:
+        returnString = '커피빈';
+        break;
+      case EnumBrand.mega:
+        returnString = '메가커피';
+        break;
+      case EnumBrand.paik:
+        returnString = '빽다방';
+        break;
+      case EnumBrand.tom:
+        returnString = '탐앤탐스';
+        break;
+      default:
+        returnString = "";
+    }
+    return returnString;
+  }
+
+  static String getKRStringFromEnumBrand(EnumBrand value) {
+    String returnString;
+
+    switch (value) {
+      case EnumBrand.starbucks:
+        returnString = '스타벅스';
+        break;
+      case EnumBrand.twosome:
+        returnString = '투썸플레이스';
+        break;
+      case EnumBrand.ediya:
+        returnString = '이디야';
+        break;
+      case EnumBrand.paul:
+        returnString = '폴 바셋';
+        break;
+      case EnumBrand.hollys:
+        returnString = '할리스';
+        break;
+      case EnumBrand.angel:
+        returnString = '엔제리어스';
+        break;
+      case EnumBrand.bean:
+        returnString = '커피빈';
+        break;
+      case EnumBrand.mega:
+        returnString = '메가커피';
+        break;
+      case EnumBrand.paik:
+        returnString = '빽다방';
+        break;
+      case EnumBrand.tom:
+        returnString = '탐앤탐스';
+        break;
       default:
         returnString = "선택안함";
     }
     return returnString;
+  }
+
+  static EnumBrand getEnumBrandFromString(String value) {
+    EnumBrand _brand;
+    switch (value) {
+      case "엔제리어스":
+        _brand = EnumBrand.angel;
+        break;
+      case "스타벅스":
+        _brand = EnumBrand.starbucks;
+        break;
+      case "투썸플레이스":
+        _brand = EnumBrand.twosome;
+        break;
+      case "이디야":
+        _brand = EnumBrand.ediya;
+        break;
+      case "폴 바셋":
+        _brand = EnumBrand.paul;
+        break;
+      case "할리스":
+        _brand = EnumBrand.hollys;
+        break;
+      case "커피빈":
+        _brand = EnumBrand.bean;
+        break;
+      case "메가커피":
+        _brand = EnumBrand.mega;
+        break;
+      case "빽다방":
+        _brand = EnumBrand.paik;
+        break;
+      case "탐앤탐스":
+        _brand = EnumBrand.tom;
+        break;
+      default:
+        _brand = EnumBrand.none;
+        break;
+    }
+
+    return _brand;
   }
 
   static String getENStringFromEnumGender(EnumGender value) {
@@ -121,5 +233,22 @@ class TransFormat {
         returnString = "선택안함";
     }
     return returnString;
+  }
+
+  static EnumGender getEnumGenderFromString(String value) {
+    EnumGender _gender;
+    switch (value) {
+      case 'male':
+        _gender = EnumGender.male;
+        break;
+      case 'female':
+        _gender = EnumGender.female;
+        break;
+
+      default:
+        _gender = EnumGender.none;
+    }
+
+    return _gender;
   }
 }

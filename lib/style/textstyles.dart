@@ -548,6 +548,13 @@ class MTextStyles {
       fontStyle: FontStyle.normal,
       fontSize: 10.0);
 
+  static const bold10Blue = const TextStyle(
+      color: MColors.facebook_blue,
+      fontWeight: FontWeight.w700,
+      fontFamily: "NotoSansKR",
+      fontStyle: FontStyle.normal,
+      fontSize: 10.0);
+
   static const bold10Tomato = const TextStyle(
       color: MColors.tomato,
       fontWeight: FontWeight.w700,

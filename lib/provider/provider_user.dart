@@ -10,12 +10,13 @@ import 'package:jjyourchoice/models/user/model_response_user_get.dart';
 import 'package:jjyourchoice/models/user/model_user_info.dart';
 import 'package:jjyourchoice/provider/parent_provider.dart';
 import 'package:jjyourchoice/service/api_service.dart';
+import 'package:jjyourchoice/utils/trans_format.dart';
 
 class ProviderUser extends ParentProvider {
   ModelUserInfo selectedUser = ModelUserInfo();
-  EnumAge selectedAge = EnumAge.ten;
-  EnumGender selectedGender = EnumGender.male;
-  EnumBrand selectedBrand = EnumBrand.starbucks;
+  EnumAge selectedAge = EnumAge.none;
+  EnumGender selectedGender = EnumGender.none;
+  EnumBrand selectedBrand = EnumBrand.none;
 
   void setSelectedAge(EnumAge value) {
     selectedAge = value;
