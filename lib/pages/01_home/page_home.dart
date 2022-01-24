@@ -291,13 +291,13 @@ class _PageHomeState extends State<PageHome> {
                         'assets/images/hot.png',
                         height: 200,
                         width: double.infinity,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       )
                     : Image.asset(
                         'assets/images/ice.png',
                         height: 200,
                         width: double.infinity,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                 Positioned(
                   child: CachedNetworkImage(

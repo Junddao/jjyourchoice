@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:jjyourchoice/enum/age.dart';
@@ -112,34 +113,45 @@ class _PageUserProfileState extends State<PageUserProfile> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          CircleAvatar(
-            radius: 60,
-            backgroundImage: AssetImage('assets/images/sample.png'),
-          ),
+          SingletonUser.singletonUser.userData.profileImage == null
+              ? CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage('assets/images/sample.png'),
+                )
+              : CircleAvatar(
+                  radius: 60,
+                  backgroundImage: CachedNetworkImageProvider(
+                      SingletonUser.singletonUser.userData.profileImage!),
+                ),
           SizedBox(width: 16),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(SingletonUser.singletonUser.userData.email!,
-                  style: MTextStyles.regular12Grey06),
+              Text(SingletonUser.singletonUser.userData.name!,
+                  style: MTextStyles.bold18Black),
               SizedBox(
                 height: 20,
               ),
-              Text('My Choice', style: MTextStyles.bold18Black),
-              SizedBox(
-                height: 8,
-              ),
-              RichText(
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
-                  children: [
-                    TextSpan(text: '스타벅스 ', style: MTextStyles.regular14Grey06),
-                    TextSpan(
-                        text: '카페라떼 (hot)', style: MTextStyles.regular14Grey06),
-                  ],
-                ),
-              ),
+              Text(SingletonUser.singletonUser.userData.email!,
+                  style: MTextStyles.regular14BlackColor)
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Text('My Choice', style: MTextStyles.bold18Black),
+              // SizedBox(
+              //   height: 8,
+              // ),
+              // RichText(
+              //   overflow: TextOverflow.ellipsis,
+              //   text: TextSpan(
+              //     children: [
+              //       TextSpan(text: '스타벅스 ', style: MTextStyles.regular14Grey06),
+              //       TextSpan(
+              //           text: '카페라떼 (hot)', style: MTextStyles.regular14Grey06),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ],
