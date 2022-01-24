@@ -21,7 +21,7 @@ class PageSplash extends StatefulWidget {
 class _PageSplashState extends State<PageSplash> {
   @override
   void initState() {
-    Future.microtask(() async {
+    Future.delayed(Duration(seconds: 2), () async {
       String? myToken = await ModelSharedPreferences.readToken();
 
       // if (true) {
@@ -43,6 +43,7 @@ class _PageSplashState extends State<PageSplash> {
         }
       }
     });
+    // Future.microtask(() async {});
     super.initState();
   }
 
@@ -62,6 +63,8 @@ class _PageSplashState extends State<PageSplash> {
                 '오늘의 커피',
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
+              SizedBox(height: 24),
+              Image.asset('assets/images/hot.png'),
             ],
           ),
         ),

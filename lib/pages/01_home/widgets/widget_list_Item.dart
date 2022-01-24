@@ -152,6 +152,7 @@ class WidgetListItem extends StatelessWidget {
         brandImage = element.logo;
       }
     });
-    return brandImage!;
+    return brandImage ??
+        'https://res.cloudinary.com/dongnesosik/image/upload/v1642773539/static/logo/logo_7_vyk9zj.jpg';
   }
 }

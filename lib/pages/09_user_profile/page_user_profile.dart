@@ -26,38 +26,28 @@ class PageUserProfile extends StatefulWidget {
 }
 
 class _PageUserProfileState extends State<PageUserProfile> {
-  EnumGender _gender = EnumGender.male;
-  EnumAge _typeOfAge = EnumAge.ten;
+  EnumGender _gender = EnumGender.none;
+  EnumAge _age = EnumAge.none;
 
   @override
   void initState() {
-    SingletonUser.singletonUser.userData.gender == 'male'
-        ? _gender = EnumGender.male
-        : _gender = EnumGender.female;
-
-    switch (SingletonUser.singletonUser.userData.age) {
-      case "10":
-        _typeOfAge = EnumAge.ten;
-        break;
-      case "20":
-        _typeOfAge = EnumAge.twenty;
-        break;
-      case "30":
-        _typeOfAge = EnumAge.thirty;
-        break;
-      case "40":
-        _typeOfAge = EnumAge.fourty;
-        break;
-      case "50":
-        _typeOfAge = EnumAge.fifty;
-        break;
-      case "60":
-        _typeOfAge = EnumAge.overSixty;
-        break;
-      default:
-    }
-
+    Future.microtask(() {
+      getUserInfo();
+    });
     super.initState();
+  }
+
+  void getUserInfo() {
+    // gender 초기값 가져오기
+
+    _gender = TransFormat.getEnumGenderFromString(
+        SingletonUser.singletonUser.userData.gender!);
+    // 나이 초기값 가져오기
+    _age = TransFormat.getEnumAgeFromString(
+        SingletonUser.singletonUser.userData.age!);
+
+    context.read<ProviderUser>().setSelectedAge(_age);
+    context.read<ProviderUser>().setSelectedGender(_gender);
   }
 
   @override
@@ -204,7 +194,7 @@ class _PageUserProfileState extends State<PageUserProfile> {
 
             children: [
               ChoiceChipAgeWidget(
-                initAge: _typeOfAge,
+                initAge: _age,
               ),
             ],
           ),

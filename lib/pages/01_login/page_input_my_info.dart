@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jjyourchoice/enum/age.dart';
+import 'package:jjyourchoice/enum/brand.dart';
 import 'package:jjyourchoice/enum/gender.dart';
 import 'package:jjyourchoice/models/singleton_user.dart';
 import 'package:jjyourchoice/models/user/model_request_user_set.dart';
@@ -21,14 +22,19 @@ class PageInputMyInfo extends StatefulWidget {
 }
 
 class _PageInputMyInfoState extends State<PageInputMyInfo> {
-  EnumGender _gender = EnumGender.male;
-  EnumAge _typeOfAge = EnumAge.ten;
+  EnumGender _gender = EnumGender.none;
+  EnumAge _age = EnumAge.none;
 
   @override
   void initState() {
-    SingletonUser.singletonUser.userData.age = "10";
-    SingletonUser.singletonUser.userData.gender = "male";
+    SingletonUser.singletonUser.userData.age = "";
+    SingletonUser.singletonUser.userData.gender = "";
     SingletonUser.singletonUser.userData.state = "active";
+    Future.microtask(() {
+      context.read<ProviderUser>().setSelectedAge(EnumAge.none);
+      context.read<ProviderUser>().setSelectedBrand(EnumBrand.none);
+      context.read<ProviderUser>().setSelectedGender(EnumGender.none);
+    });
     super.initState();
   }
 
@@ -88,7 +94,7 @@ class _PageInputMyInfoState extends State<PageInputMyInfo> {
 
             children: [
               ChoiceChipAgeWidget(
-                initAge: EnumAge.ten,
+                initAge: _age,
               ),
             ],
           ),
@@ -124,6 +130,7 @@ class _PageInputMyInfoState extends State<PageInputMyInfo> {
       ),
     );
   }
+  
 
   // genderWidget() {
   //   return Padding(

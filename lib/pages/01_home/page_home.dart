@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jjyourchoice/enum/age.dart';
 import 'package:jjyourchoice/enum/brand.dart';
 import 'package:jjyourchoice/enum/gender.dart';
+import 'package:jjyourchoice/enum/view_state.dart';
 import 'package:jjyourchoice/models/coffee/model_request_get_coffee_list.dart';
 import 'package:jjyourchoice/models/coffee/model_response_get_coffee_list.dart';
 import 'package:jjyourchoice/models/singleton_user.dart';
@@ -39,12 +40,7 @@ class _PageHomeState extends State<PageHome> {
 
     Future.microtask(() {
       getUserInfo();
-      context.read<ProviderCoffee>().filteredValue = ModelRequestGetCoffeeList(
-        age: SingletonUser.singletonUser.userData.age,
-        brand: TransFormat.getENStringFromEnumBrand(_brand),
-        gender: SingletonUser.singletonUser.userData.gender,
-        preference: "like",
-      );
+      getCoffeeList();
       context.read<ProviderCoffee>().getCoffeeList();
     });
     super.initState();
@@ -65,6 +61,16 @@ class _PageHomeState extends State<PageHome> {
     context.read<ProviderUser>().setSelectedAge(_age);
     context.read<ProviderUser>().setSelectedGender(_gender);
     context.read<ProviderUser>().setSelectedBrand(_brand);
+  }
+
+  void getCoffeeList() {
+    context.read<ProviderCoffee>().filteredValue = ModelRequestGetCoffeeList(
+      age: TransFormat.getENStringFromEnumAge(_age),
+      brand: TransFormat.getENStringFromEnumBrand(_brand),
+      gender: TransFormat.getENStringFromEnumGender(_gender),
+      preference: "like",
+    );
+    context.read<ProviderCoffee>().getCoffeeList();
   }
 
   @override
@@ -95,22 +101,27 @@ class _PageHomeState extends State<PageHome> {
         if (value.modelResponseGetCoffeeListData == null) {
           return Center(child: CircularProgressIndicator());
         }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            topWidget(),
-            Divider(),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: kDefaultHorizontalPadding, vertical: 8),
-              child: Text('내가 좋아하는 커피를 눌러서 추천할 수 있어요! 😚',
-                  overflow: TextOverflow.ellipsis,
-                  style: MTextStyles.regular12Grey06),
-            ),
-            Divider(),
-            listWidget(),
-          ],
-        );
+        return Consumer(builder: (__, ProviderUser pUser, ___) {
+          if (pUser.state == ViewState.Busy) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              topWidget(),
+              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: kDefaultHorizontalPadding, vertical: 8),
+                child: Text('내가 좋아하는 커피를 눌러서 추천할 수 있어요! 😚',
+                    overflow: TextOverflow.ellipsis,
+                    style: MTextStyles.regular12Grey06),
+              ),
+              Divider(),
+              listWidget(),
+            ],
+          );
+        });
       }),
     );
   }
@@ -169,7 +180,10 @@ class _PageHomeState extends State<PageHome> {
                                 context.watch<ProviderUser>().selectedGender),
                             style: MTextStyles.bold12Tomato),
                         onDeleted: () {
-                          print('aaa');
+                          context
+                              .read<ProviderUser>()
+                              .setSelectedGender(EnumGender.none);
+                          getCoffeeList();
                         },
                         deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
                       ),
@@ -184,7 +198,12 @@ class _PageHomeState extends State<PageHome> {
                             TransFormat.getKRStringFromEnumAge(
                                 context.watch<ProviderUser>().selectedAge),
                             style: MTextStyles.bold12Tomato),
-                        onDeleted: () {},
+                        onDeleted: () {
+                          context
+                              .read<ProviderUser>()
+                              .setSelectedAge(EnumAge.none);
+                          getCoffeeList();
+                        },
                         deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
                       ),
                     ),
@@ -196,7 +215,12 @@ class _PageHomeState extends State<PageHome> {
                           TransFormat.getKRStringFromEnumBrand(
                               context.watch<ProviderUser>().selectedBrand),
                           style: MTextStyles.bold12Tomato),
-                      onDeleted: () {},
+                      onDeleted: () {
+                        context
+                            .read<ProviderUser>()
+                            .setSelectedBrand(EnumBrand.none);
+                        getCoffeeList();
+                      },
                       deleteIcon: Icon(Icons.cancel, color: MColors.tomato),
                     ),
             ],
@@ -207,22 +231,24 @@ class _PageHomeState extends State<PageHome> {
   }
 
   listWidget() {
+    List<ModelResponseGetCoffeeListData>? coffeeLists =
+        context.read<ProviderCoffee>().modelResponseGetCoffeeListData!;
     return Expanded(
       child: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: kDefaultHorizontalPadding,
             vertical: kDefaultVerticalPadding),
-        child: context
-                .read<ProviderCoffee>()
-                .modelResponseGetCoffeeListData!
-                .isEmpty
+        child: coffeeLists.isEmpty
             ? Center(child: Text('해당 조건에 맞는 커피가 없어요 😭'))
             : ListView.builder(
                 shrinkWrap: true,
-                itemCount: 5,
+                itemCount: coffeeLists.length,
                 itemBuilder: (context, index) {
                   return InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        await context
+                            .read<ProviderCoffee>()
+                            .checkPreference(coffeeLists[index].coffee!.id!);
                         print('item click');
                         showModalBottomSheet(
                                 context: context,
@@ -277,97 +303,125 @@ class _PageHomeState extends State<PageHome> {
                   child: CachedNetworkImage(
                     imageUrl: getBrandLogo(
                         providerCoffee, coffeeList[index].coffee!.brand!),
-                    height: 30,
-                    width: 30,
+                    height: 40,
+                    width: 40,
                   ),
                 )
               ],
             ),
             SizedBox(height: 18),
-            Text(coffeeList[index].coffee!.brand!,
-                style: MTextStyles.regular14BlackColor),
+            coffeeList[index].coffee!.temp == 'hot'
+                ? Text('#${coffeeList[index].coffee!.brand!}',
+                    style: MTextStyles.bold14Tomato)
+                : Text('#${coffeeList[index].coffee!.brand!}',
+                    style: MTextStyles.bold14Blue),
+            coffeeList[index].coffee!.temp == 'hot'
+                ? Text(
+                    'Hot',
+                    style: MTextStyles.bold14Tomato,
+                  )
+                : Text(
+                    'Iced',
+                    style: MTextStyles.bold14Blue,
+                  ),
             SizedBox(height: 18),
             Text(coffeeList[index].coffee!.name!,
                 style: MTextStyles.regular14BlackColor),
             SizedBox(height: 18),
             Divider(),
-            Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () async {
-                      int id = coffeeList[index].coffee!.id!;
-                      bool result = await context
-                          .read<ProviderCoffee>()
-                          .setLikeCoffee(id)
-                          .catchError((onError) {
-                        print('error park');
-                        return false;
-                      });
+            context.read<ProviderCoffee>().modelPreference!.liked == true ||
+                    context.read<ProviderCoffee>().modelPreference!.liked ==
+                        true
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            '이미 투표하신 커피입니다. 😙',
+                            style: MTextStyles.bold16Tomato,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            int id = coffeeList[index].coffee!.id!;
+                            bool result = await context
+                                .read<ProviderCoffee>()
+                                .setLikeCoffee(id)
+                                .catchError((onError) {
+                              print('error park');
+                              return false;
+                            });
 
-                      if (result == true) {
-                        JJDialog.showOneButtonDialog(
-                                context: context,
-                                title: '추천 완료',
-                                subTitle: '추천해 주셔서 감사합니다. 😉')
-                            .then((value) {
-                          Navigator.of(context).pop();
-                        });
-                      } else {
-                        JJDialog.showOneButtonDialog(
-                                context: context,
-                                title: '중복 추천 안되요.',
-                                subTitle: '추천은 하루 한번만 가능합니다. 😉')
-                            .then((value) {
-                          Navigator.of(context).pop();
-                        });
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: MColors.tomato,
+                            if (result == true) {
+                              JJDialog.showOneButtonDialog(
+                                      context: context,
+                                      title: '추천 완료',
+                                      subTitle: '추천해 주셔서 감사합니다. 😉')
+                                  .then((value) {
+                                Navigator.of(context).pop();
+                              });
+                            } else {
+                              JJDialog.showOneButtonDialog(
+                                      context: context,
+                                      title: '중복 추천 안되요.',
+                                      subTitle: '이미 추천 하신 커피입니다. 😉')
+                                  .then((value) {
+                                Navigator.of(context).pop();
+                              });
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: MColors.tomato,
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            child: Center(
+                                child: Text('👍  추천',
+                                    style: MTextStyles.bold16White)),
+                          ),
+                        ),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Center(
-                          child:
-                              Text('👍  추천', style: MTextStyles.bold16White)),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      int id = coffeeList[index].coffee!.id!;
-                      context.read<ProviderCoffee>().setHateCoffee(id);
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            int id = coffeeList[index].coffee!.id!;
+                            context.read<ProviderCoffee>().setHateCoffee(id);
 
-                      JJDialog.showOneButtonDialog(
-                              context: context,
-                              title: '비추천 완료',
-                              subTitle: '소중한 한표 감사합니다. 😌')
-                          .then((value) {
-                        Navigator.of(context).pop();
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: MColors.white,
-                        border: Border.all(),
+                            JJDialog.showOneButtonDialog(
+                                    context: context,
+                                    title: '비추천 완료',
+                                    subTitle: '소중한 한표 감사합니다. 😌')
+                                .then((value) {
+                              Navigator.of(context).pop();
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: MColors.white,
+                              border: Border.all(),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            child: Center(
+                                child: Center(
+                                    child: Text('👎 비추천',
+                                        style: MTextStyles.bold16Black))),
+                          ),
+                        ),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Center(
-                          child: Center(
-                              child: Text('👎 비추천',
-                                  style: MTextStyles.bold16Black))),
-                    ),
-                  ),
-                ),
-              ],
-            )
+                    ],
+                  )
           ],
         ),
       ),
