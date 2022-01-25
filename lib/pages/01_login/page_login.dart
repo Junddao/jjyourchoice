@@ -66,7 +66,7 @@ class _PageLoginState extends State<PageLogin> {
                           ? SizedBox(height: 20.0)
                           : SizedBox.shrink(),
                       Platform.isIOS ? _buildAppleLogin() : SizedBox.shrink(),
-                      SizedBox(height: 20),
+                      SizedBox(height: 40),
                       _buildEmailLogin(),
                     ],
                   ),
@@ -289,7 +289,7 @@ class _PageLoginState extends State<PageLogin> {
             onTap: () {
               Navigator.of(context).pushNamed('PageEmailLogin');
             },
-            child: Text('이메일로 로그인', style: MTextStyles.bold12White)),
+            child: Text('이메일로 로그인', style: MTextStyles.regular12WarmGrey_underline)),
       ),
     );
   }

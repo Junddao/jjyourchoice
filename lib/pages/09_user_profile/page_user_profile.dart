@@ -27,26 +27,6 @@ class PageUserProfile extends StatefulWidget {
 }
 
 class _PageUserProfileState extends State<PageUserProfile> {
-  EnumGender _gender = EnumGender.none;
-  EnumAge _age = EnumAge.none;
-
-  @override
-  void initState() {
-    Future.microtask(() {
-      getUserInfo();
-    });
-    super.initState();
-  }
-
-  void getUserInfo() {
-    context.read<ProviderUser>().setSelectedAge(
-        TransFormat.getEnumAgeFromString(
-            SingletonUser.singletonUser.userData.age!));
-    context.read<ProviderUser>().setSelectedGender(
-        TransFormat.getEnumGenderFromString(
-            SingletonUser.singletonUser.userData.gender!));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,10 +89,12 @@ class _PageUserProfileState extends State<PageUserProfile> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          SingletonUser.singletonUser.userData.profileImage == null
+          SingletonUser.singletonUser.userData.profileImage == '' ||
+                  SingletonUser.singletonUser.userData.profileImage == null
               ? CircleAvatar(
                   radius: 60,
                   backgroundImage: AssetImage('assets/images/sample.png'),
+                  backgroundColor: MColors.tomato,
                 )
               : CircleAvatar(
                   radius: 60,
@@ -124,12 +106,12 @@ class _PageUserProfileState extends State<PageUserProfile> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(SingletonUser.singletonUser.userData.name!,
+              Text(SingletonUser.singletonUser.userData.name ?? '',
                   style: MTextStyles.bold18Black),
               SizedBox(
                 height: 20,
               ),
-              Text(SingletonUser.singletonUser.userData.email!,
+              Text(SingletonUser.singletonUser.userData.email ?? '',
                   style: MTextStyles.regular14BlackColor)
               // SizedBox(
               //   height: 20,
@@ -174,7 +156,8 @@ class _PageUserProfileState extends State<PageUserProfile> {
 
             children: [
               ChoiceChipGenderWidget(
-                initGender: context.read<ProviderUser>().selectedGender,
+                initGender: TransFormat.getEnumGenderFromString(
+                    SingletonUser.singletonUser.userData.gender!),
               ),
             ],
           ),
@@ -202,7 +185,8 @@ class _PageUserProfileState extends State<PageUserProfile> {
 
             children: [
               ChoiceChipAgeWidget(
-                initAge: context.read<ProviderUser>().selectedAge,
+                initAge: TransFormat.getEnumAgeFromString(
+                    SingletonUser.singletonUser.userData.age!),
               ),
             ],
           ),
