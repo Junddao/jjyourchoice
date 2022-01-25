@@ -104,7 +104,7 @@ class TransFormat {
         returnString = '할리스';
         break;
       case EnumBrand.angel:
-        returnString = '엔제리어스';
+        returnString = '엔제리너스';
         break;
       case EnumBrand.bean:
         returnString = '커피빈';
@@ -144,7 +144,7 @@ class TransFormat {
         returnString = '할리스';
         break;
       case EnumBrand.angel:
-        returnString = '엔제리어스';
+        returnString = '엔제리너스';
         break;
       case EnumBrand.bean:
         returnString = '커피빈';
@@ -167,7 +167,7 @@ class TransFormat {
   static EnumBrand getEnumBrandFromString(String value) {
     EnumBrand _brand;
     switch (value) {
-      case "엔제리어스":
+      case "엔제리너스":
         _brand = EnumBrand.angel;
         break;
       case "스타벅스":

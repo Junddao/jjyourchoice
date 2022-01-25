@@ -62,8 +62,12 @@ class _PageLoginState extends State<PageLogin> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildKakaoLogin(),
-                      SizedBox(height: 20.0),
+                      Platform.isIOS
+                          ? SizedBox(height: 20.0)
+                          : SizedBox.shrink(),
                       Platform.isIOS ? _buildAppleLogin() : SizedBox.shrink(),
+                      SizedBox(height: 20),
+                      _buildEmailLogin(),
                     ],
                   ),
                 ),
@@ -178,11 +182,11 @@ class _PageLoginState extends State<PageLogin> {
         Navigator.of(context)
             .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
       } else {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
-        // 입력 다 받아진 상태면
         // Navigator.of(context)
-        //     .pushNamedAndRemoveUntil('PageTab', (route) => false);
+        //     .pushNamedAndRemoveUntil('PageInputMyInfo', (route) => false);
+        // 입력 다 받아진 상태면
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('PageTab', (route) => false);
       }
 
       // singleton에 넣고
@@ -243,20 +247,20 @@ class _PageLoginState extends State<PageLogin> {
 
   _loginWithApple() async {
     fb.User? user = await LoginService().signInWithApple();
-    String firebaseIdToken = await user!.getIdToken();
-    SignInRequestModel signInRequestModel = SignInRequestModel(
-      firebaseIdToken: firebaseIdToken,
-      deviceModel: ApiService.deviceModel,
-      osType: ApiService.osType,
-      osVersion: ApiService.osVersion,
-      uid: ApiService.deviceIdentifier,
-    );
+    // String firebaseIdToken = await user!.getIdToken();
+    // SignInRequestModel signInRequestModel = SignInRequestModel(
+    //   firebaseIdToken: firebaseIdToken,
+    //   deviceModel: ApiService.deviceModel,
+    //   osType: ApiService.osType,
+    //   osVersion: ApiService.osVersion,
+    //   uid: ApiService.deviceIdentifier,
+    // );
 
     LoginService().signIn(user).catchError(_onErrorLogin).then((result) async {
       await context.read<ProviderUser>().getMe();
 
       if (SingletonUser.singletonUser.userData.age == '') {
-        SingletonUser.singletonUser.userData.email = user.email ?? '';
+        SingletonUser.singletonUser.userData.email = user!.email ?? '';
         SingletonUser.singletonUser.userData.name = user.displayName ?? '';
         SingletonUser.singletonUser.userData.profileImage = user.photoURL ?? '';
         // 정보 입력 안된 상태면 입력 창으로보내기
@@ -275,5 +279,18 @@ class _PageLoginState extends State<PageLogin> {
 
       // 페이지 전환
     });
+  }
+
+  _buildEmailLogin() {
+    return Container(
+      width: double.infinity,
+      child: Center(
+        child: InkWell(
+            onTap: () {
+              Navigator.of(context).pushNamed('PageEmailLogin');
+            },
+            child: Text('이메일로 로그인', style: MTextStyles.bold12White)),
+      ),
+    );
   }
 }

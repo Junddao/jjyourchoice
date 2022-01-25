@@ -39,16 +39,12 @@ class _PageUserProfileState extends State<PageUserProfile> {
   }
 
   void getUserInfo() {
-    // gender 초기값 가져오기
-
-    _gender = TransFormat.getEnumGenderFromString(
-        SingletonUser.singletonUser.userData.gender!);
-    // 나이 초기값 가져오기
-    _age = TransFormat.getEnumAgeFromString(
-        SingletonUser.singletonUser.userData.age!);
-
-    context.read<ProviderUser>().setSelectedAge(_age);
-    context.read<ProviderUser>().setSelectedGender(_gender);
+    context.read<ProviderUser>().setSelectedAge(
+        TransFormat.getEnumAgeFromString(
+            SingletonUser.singletonUser.userData.age!));
+    context.read<ProviderUser>().setSelectedGender(
+        TransFormat.getEnumGenderFromString(
+            SingletonUser.singletonUser.userData.gender!));
   }
 
   @override
@@ -178,7 +174,7 @@ class _PageUserProfileState extends State<PageUserProfile> {
 
             children: [
               ChoiceChipGenderWidget(
-                initGender: _gender,
+                initGender: context.read<ProviderUser>().selectedGender,
               ),
             ],
           ),
@@ -206,7 +202,7 @@ class _PageUserProfileState extends State<PageUserProfile> {
 
             children: [
               ChoiceChipAgeWidget(
-                initAge: _age,
+                initAge: context.read<ProviderUser>().selectedAge,
               ),
             ],
           ),

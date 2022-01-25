@@ -30,10 +30,6 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
-  EnumGender _gender = EnumGender.none;
-  EnumAge _age = EnumAge.none;
-  EnumBrand _brand = EnumBrand.none;
-
   @override
   void initState() {
     ParentProvider().initailize();
@@ -47,27 +43,25 @@ class _PageHomeState extends State<PageHome> {
   }
 
   void getUserInfo() {
-    // gender 초기값 가져오기
-
-    _gender = TransFormat.getEnumGenderFromString(
-        SingletonUser.singletonUser.userData.gender!);
-    // 나이 초기값 가져오기
-    _age = TransFormat.getEnumAgeFromString(
-        SingletonUser.singletonUser.userData.age!);
-
-    _brand = TransFormat.getEnumBrandFromString('');
-    // 브랜드 초기값 가져오기
-
-    context.read<ProviderUser>().setSelectedAge(_age);
-    context.read<ProviderUser>().setSelectedGender(_gender);
-    context.read<ProviderUser>().setSelectedBrand(_brand);
+    context.read<ProviderUser>().setSelectedAge(
+        TransFormat.getEnumAgeFromString(
+            SingletonUser.singletonUser.userData.age!));
+    context.read<ProviderUser>().setSelectedGender(
+        TransFormat.getEnumGenderFromString(
+            SingletonUser.singletonUser.userData.gender!));
+    context
+        .read<ProviderUser>()
+        .setSelectedBrand(TransFormat.getEnumBrandFromString(''));
   }
 
   void getCoffeeList() {
     context.read<ProviderCoffee>().filteredValue = ModelRequestGetCoffeeList(
-      age: TransFormat.getENStringFromEnumAge(_age),
-      brand: TransFormat.getENStringFromEnumBrand(_brand),
-      gender: TransFormat.getENStringFromEnumGender(_gender),
+      age: TransFormat.getENStringFromEnumAge(
+          context.read<ProviderUser>().selectedAge),
+      brand: TransFormat.getENStringFromEnumBrand(
+          context.read<ProviderUser>().selectedBrand),
+      gender: TransFormat.getENStringFromEnumGender(
+          context.read<ProviderUser>().selectedGender),
       preference: "like",
     );
     context.read<ProviderCoffee>().getCoffeeList();

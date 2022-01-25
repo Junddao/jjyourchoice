@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jjyourchoice/pages/00_etc/page_block.dart';
 import 'package:jjyourchoice/pages/00_intro/page_intro_slide.dart';
 import 'package:jjyourchoice/pages/01_home/page_home.dart';
+import 'package:jjyourchoice/pages/01_login/page_email_login.dart';
 import 'package:jjyourchoice/pages/01_login/page_input_my_info.dart';
 import 'package:jjyourchoice/pages/01_login/page_login.dart';
 import 'package:jjyourchoice/pages/09_user_profile/page_user_profile.dart';
@@ -34,6 +35,12 @@ class Routers {
       case 'PageIntroSlide':
         return CupertinoPageRoute(
           builder: (_) => PageIntroSlide(),
+          settings: settings,
+        );
+
+      case 'PageEmailLogin':
+        return CupertinoPageRoute(
+          builder: (_) => PageEmailLogin(),
           settings: settings,
         );
 
